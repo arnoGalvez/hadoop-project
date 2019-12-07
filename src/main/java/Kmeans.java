@@ -16,6 +16,14 @@ public class Kmeans {
     public static void main(String[] args) throws Exception
     {
         Configuration conf = new Configuration();
+
+        /* Set via configuration 'k' and the column onto do the clustering */
+        int k   = Integer.parseInt(args[2]);
+        int col = Integer.parseInt(args[3]);
+
+        conf.setInt("k", k);
+        conf.setInt("col", col);
+
         Job job = Job.getInstance( conf, "word count" );
         job.setJarByClass( Kmeans.class );
         job.setMapperClass( TokenizerMapper.class );
@@ -30,12 +38,24 @@ public class Kmeans {
 
     public static class TokenizerMapper extends Mapper<Object, Text, Text, IntWritable> {
 
+        private int k;
+        private int col;
         private final static IntWritable one = new IntWritable( 1 );
         private Text word = new Text();
 
+        public void setup (Context context) throws IOException, InterruptedException
+        {
+            Configuration conf = context.getConfiguration();
+            k   = conf.getInt("k", -1);
+            col = conf.getInt("col", -1);
+        }
+
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException
         {
-            StringTokenizer itr = new StringTokenizer( value.toString() );
+            /* Get all columns */
+            String[] tokens = value.toString().split(",");
+
+            StringTokenizer itr = new StringTokenizer( value.toString(), "," );
             while ( itr.hasMoreTokens() ) {
                 word.set( itr.nextToken() );
                 context.write( word, one );
