@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 class Point {
-  List<Double> coords = new ArrayList<Double>();
+  private List<Double> coords = new ArrayList<Double>();
 
   public Point(int n) {
     for (int i = 0; i < n; i++) {
@@ -12,6 +12,10 @@ class Point {
 
   public int size() {
     return coords.size();
+  }
+
+  public List<Double> getCoords() {
+    return coords;
   }
 
   public Point(List<Double> _coords) {
