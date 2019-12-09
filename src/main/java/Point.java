@@ -30,7 +30,7 @@ class Point {
   private Point addCoords(Point pt) {
     int len = coords.size();
     for(int i = 0; i < len; ++i) {
-      double sum = (pt.coords.get(i) + coords.get(i);
+      double sum = (pt.coords.get(i) + coords.get(i));
       coords.set(i, sum);
     }
     return this;
@@ -54,6 +54,16 @@ class Point {
     for(Point pt : pts) {
       res = Point.add(res, pt);
     }
+    return res;
+  }
+
+  public static Point scale(Point point, double a) {
+    Point res = new Point(point);
+    int len = res.size();
+    for (int i = 0; i < len; i++) {
+      res.coords.set(i, res.coords.get(i) * a);
+    }
+
     return res;
   }
 

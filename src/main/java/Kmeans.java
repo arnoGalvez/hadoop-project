@@ -24,7 +24,7 @@ public class Kmeans {
         conf.setInt("k", k);
         conf.setInt("col", col);
 
-        Job job = Job.getInstance( conf, "word count" );
+        Job job = Job.getInstance( conf, "word pointsCount" );
         job.setJarByClass( Kmeans.class );
         job.setMapperClass( TokenizerMapper.class );
         job.setCombinerClass( IntSumReducer.class );
