@@ -1,4 +1,10 @@
-public class MeanData<Point extends PlusDivide> {
+import org.apache.hadoop.io.Writable;
+
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+
+public class MeanData<Point extends PlusDivide> implements Writable {
     int count;
     Point sum;
 
@@ -17,6 +23,11 @@ public class MeanData<Point extends PlusDivide> {
     {
         return (Point)sum.Divide( count );
     }
+
+
+    public void readFields(DataInput in) throws IOException { sum = in.readInt(); count = in.readInt(); }
+    public void write(DataOutput out) throws IOException { out.writeInt(sum); out.writeInt(count); }
+
 }
 
 
