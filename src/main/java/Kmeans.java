@@ -26,13 +26,17 @@ public class Kmeans {
         conf.set("centersFilePath", centers.toString());
         conf.setBoolean(KmeansReducer.ConfStringHasConverged, false);
 
+
         /* Set via configuration 'k' and the column onto do the clustering */
         int k   = Integer.parseInt(args[2]);
         int col = Integer.parseInt(args[3]);
+        int coordsCount = Integer.parseInt( args[4]);
+
 
         conf.setInt("k", k);
         conf.setInt("col", col);
-        conf.set("centroids", "centroids0");
+        conf.setInt( "coordinatesCount", coordsCount );
+        //conf.set("centroids", "centroids0");
 
         // Main loop
         while(!conf.getBoolean( KmeansReducer.ConfStringHasConverged, false ))
