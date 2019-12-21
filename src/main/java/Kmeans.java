@@ -80,8 +80,6 @@ public class Kmeans {
             fileSystem.delete( output, true );
         }
 
-
-
         System.exit( 1 );
     }
 

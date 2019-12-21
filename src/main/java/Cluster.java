@@ -1,11 +1,12 @@
 import org.apache.hadoop.io.Writable;
+import org.apache.hadoop.io.WritableComparable;
 
 import javax.ws.rs.Path;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public class Cluster implements Writable {
+public class Cluster implements WritableComparable<Cluster> {
     private int id;
     Cluster(int id)
     {
@@ -32,5 +33,11 @@ public class Cluster implements Writable {
     public void readFields(DataInput in) throws IOException
     {
         id = in.readInt();
+    }
+
+    @Override
+    public int compareTo(Cluster cluster)
+    {
+        return id < cluster.id ? -1 : id == cluster.id ? 0 : 1;
     }
 }
