@@ -68,8 +68,8 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
                                                                      SequenceFile.Writer.valueClass(MeanData.class));
 
         HashMap<Cluster, MeanData> oldCentroids = new HashMap<Cluster, MeanData>();
-        Cluster oldCluster = null;
-        MeanData oldMeanData = null;
+        Cluster oldCluster = new Cluster(  );
+        MeanData oldMeanData = new MeanData( 1, new Point( 1 ) );
         for (; centerReader.next( oldCluster, oldMeanData );)
         {
             oldCentroids.put(oldCluster, oldMeanData);
