@@ -8,6 +8,8 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.io.SequenceFile;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 class KmeansMapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Cluster, MeanData> {
@@ -15,6 +17,7 @@ class KmeansMapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Clus
     private static int col;// Coordinates starting columns
     private static int coordinatesCount;
     private static List<Point> oldcentroids = new ArrayList<Point>();
+    private static final Log LOG = LogFactory.getLog(KmeansMapper.class);
 
 
     public void setup (Context context) throws IOException, InterruptedException
@@ -35,14 +38,20 @@ class KmeansMapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Clus
 
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException
     {
-        String[] tokens = value.toString().split(",");
-        List<Double> coords = new ArrayList<Double>();
-        coords.add(Double.parseDouble(tokens[col]));
-        Point pt = new Point(coords);
+        try {
+            String[] tokens = value.toString().split( "," );
+            List<Double> coords = new ArrayList<Double>();
+            coords.add( Double.parseDouble( tokens[col] ) );
+            Point pt = new Point( coords );
 
-        int nearest = Point.getNearest(oldcentroids, pt);
-        MeanData centroid = new MeanData(1, oldcentroids.get(nearest));
-        Cluster c = new Cluster(nearest);
-        context.write(c, centroid);
+            int nearest = Point.getNearest( oldcentroids, pt );
+            MeanData centroid = new MeanData( 1, oldcentroids.get( nearest ) );
+            Cluster c = new Cluster( nearest );
+            context.write( c, centroid );
+        } catch ( Exception e )
+        {
+            LOG.info( "KmeansMapper: swallowing exception " + e.getMessage() );
+        }
+
     }
 }
