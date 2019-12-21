@@ -4,7 +4,7 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.List;
-import  java.util.ArrayList;
+import java.util.ArrayList;
 
 public class MeanData implements Writable {
     private int pointsCount;
@@ -50,7 +50,7 @@ public class MeanData implements Writable {
         List<Double> coords = new ArrayList<Double>(coordsCount);
         for (int i = 0; i < coordsCount; ++i)
         {
-            coords.set(i, in.readDouble());
+            coords.add(in.readDouble());
         }
         sum = new Point(coords);
     }

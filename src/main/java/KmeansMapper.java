@@ -8,7 +8,6 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.io.SequenceFile;
-import org.apache.log4j.Logger;
 
 
 class KmeansMapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Cluster, MeanData> {
@@ -16,7 +15,6 @@ class KmeansMapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Clus
     private static int col;// Coordinates starting columns
     private static int coordinatesCount;
     private static List<Point> oldcentroids = new ArrayList<Point>();
-    private Logger logger = Logger.getLogger(KmeansMapper.class);
 
 
     public void setup (Context context) throws IOException, InterruptedException
@@ -30,7 +28,6 @@ class KmeansMapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Clus
         Cluster  key      = new Cluster(0);
         MeanData centroid = new MeanData(1, new Point( 1 ));
         for (int i = 0; i < k; i++) {
-            logger.fatal( "Centroid : " + centroid.toString() );
             reader.next(key, centroid);
             oldcentroids.add(centroid.ComputeMean());
         }
