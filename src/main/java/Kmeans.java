@@ -40,6 +40,7 @@ public class Kmeans {
             Job job = Job.getInstance( conf, "Kmeans compute" );
             job.setJarByClass( Kmeans.class );
             job.setMapperClass( KmeansMapper.class );
+            job.setNumReduceTasks( 1 );
             //job.setCombinerClass( IntSumReducer.class );
 
             job.setReducerClass( KmeansReducer.class );
