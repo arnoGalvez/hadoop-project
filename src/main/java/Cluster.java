@@ -27,6 +27,17 @@ public class Cluster implements WritableComparable<Cluster> {
     }
 
     @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Cluster cluster = (Cluster)o;
+        return  cluster.id == this.id;
+    }
+
+    @Override
     public void write(DataOutput out) throws IOException
     {
         out.writeInt( id );
