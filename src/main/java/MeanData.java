@@ -11,12 +11,12 @@ public class MeanData implements Writable {
     private int coordsCount;
     private Point sum;
 
-    /*public MeanData()
+    public MeanData()
     {
         pointsCount = 0;
         coordsCount = 0;
         Point sum = null;
-    }*/
+    }
 
     public MeanData(MeanData meanData)
     {
