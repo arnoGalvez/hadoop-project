@@ -25,22 +25,30 @@ public class Kmeans {
         conf.setInt("col", col);
         conf.set("centroids", "centroids0");
 
-        Job job = Job.getInstance( conf, "word count" );
+        Job job = Job.getInstance( conf, "word pointsCount" );
         job.setJarByClass( Kmeans.class );
         job.setMapperClass( TokenizerMapper.class );
-        job.setCombinerClass( IntSumReducer.class );
+        //job.setCombinerClass( IntSumReducer.class );
+
         job.setReducerClass( IntSumReducer.class );
-        job.setOutputKeyClass( Text.class );
-        job.setOutputValueClass( IntWritable.class );
+        job.setOutputKeyClass( Cluster.class );
+        job.setOutputValueClass( MeanData.class );
+
         FileInputFormat.addInputPath( job, new Path( args[0] ) );
         FileOutputFormat.setOutputPath( job, new Path( args[1] ) );
+
+
+
         System.exit( job.waitForCompletion( true ) ? 0 : 1 );
+
+
     }
 
     public static class TokenizerMapper extends Mapper<Object, Text, Text, IntWritable> {
 
-        private int k;
-        private int col;
+        private static int k;
+        private static int col;// Coordinates starting columns
+        private static int coordinatesCount;
         private final static IntWritable one = new IntWritable( 1 );
         private Text word = new Text();
 
@@ -49,6 +57,7 @@ public class Kmeans {
             Configuration conf = context.getConfiguration();
             k   = conf.getInt("k", -1);
             col = conf.getInt("col", -1);
+            coordinatesCount = conf.getInt("coordinatesCount", 0);
         }
 
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException
@@ -58,8 +67,8 @@ public class Kmeans {
 
             StringTokenizer itr = new StringTokenizer( value.toString(), "," );
             while ( itr.hasMoreTokens() ) {
-                word.set( itr.nextToken() );
-                context.write( word, one );
+                /*word.set( itr.nextToken() );
+                context.write( word, one );*/
             }
         }
     }
