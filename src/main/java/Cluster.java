@@ -7,7 +7,10 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 public class Cluster implements WritableComparable<Cluster> {
+
     private int id;
+
+    Cluster() {id = -1;}
     Cluster(int id)
     {
         this.id = id;
