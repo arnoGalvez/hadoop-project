@@ -36,6 +36,15 @@ class Point {
     return this;
   }
 
+  private Point subCoords(Point pt) {
+    int len = coords.size();
+    for(int i = 0; i < len; ++i) {
+      double sub = (coords.get(i) - pt.coords.get(i));
+      coords.set(i, sub);
+    }
+    return this;
+  }
+
   public void scale(double a) {
     int len = coords.size();
     for (int i = 0; i < len; i++) {
@@ -79,6 +88,11 @@ class Point {
   public static Point add(Point lhs, Point rhs) {
     Point res = new Point(lhs);
     return res.addCoords(rhs);
+  }
+
+  public static Point sub(Point lhs, Point rhs) {
+    Point res = new Point(lhs);
+    return res.subCoords(rhs);
   }
 
   public static Point sum(List<Point> pts) {

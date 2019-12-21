@@ -17,6 +17,13 @@ public class Kmeans {
     {
         Configuration conf = new Configuration();
 
+        Path input = new Path(args[0]);
+        Path output = new Path(args[1]);
+        Path centers = new Path(input.getParent().toString() + "centers/centroids");
+
+        conf.set("centersFilePath", centers.toString());
+        conf.setBoolean(KmeansReducer.ConfStringHasConverged, false);
+
         /* Set via configuration 'k' and the column onto do the clustering */
         int k   = Integer.parseInt(args[2]);
         int col = Integer.parseInt(args[3]);
@@ -27,21 +34,19 @@ public class Kmeans {
 
         Job job = Job.getInstance( conf, "word pointsCount" );
         job.setJarByClass( Kmeans.class );
-        job.setMapperClass( TokenizerMapper.class );
+        job.setMapperClass( KmeansMapper.class );
         //job.setCombinerClass( IntSumReducer.class );
 
-        job.setReducerClass( IntSumReducer.class );
+        job.setReducerClass( KmeansReducer.class );
         job.setOutputKeyClass( Cluster.class );
         job.setOutputValueClass( MeanData.class );
 
-        FileInputFormat.addInputPath( job, new Path( args[0] ) );
-        FileOutputFormat.setOutputPath( job, new Path( args[1] ) );
+        FileInputFormat.addInputPath( job, input );
+        FileOutputFormat.setOutputPath( job, output );
 
-
+        // Main while loop here
 
         System.exit( job.waitForCompletion( true ) ? 0 : 1 );
-
-
     }
 
     public static class TokenizerMapper extends Mapper<Object, Text, Text, IntWritable> {
