@@ -38,6 +38,11 @@ public class Kmeans {
         conf.setInt( "coordinatesCount", coordsCount );
         conf.set("centroids", "centroids0");
 
+        FileSystem outputRm = FileSystem.get(output.toUri(), conf);
+        if(outputRm.exists(output)) {
+            outputRm.delete(output, true);
+        }
+
         // Main loop
         while(!conf.getBoolean( KmeansReducer.ConfStringHasConverged, false ))
         {
