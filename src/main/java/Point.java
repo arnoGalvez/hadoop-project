@@ -43,6 +43,24 @@ class Point {
     }
   }
 
+  public double distance(Point p) {
+    double res = 0.;
+    for (int i = 0; i < coords.size(); i++) {
+      double diff = coords.get(i) - p.coords.get(i);
+      res += diff * diff;
+    }
+    return res;
+  }
+
+  public double norm() {
+    double res = 0.;
+    for (int i = 0; i < coords.size(); i++) {
+      double x = coords.get(i);
+      res += x * x;
+    }
+    return res;
+  }
+
   public static Point add(Point lhs, Point rhs) {
     Point res = new Point(lhs);
     return res.addCoords(rhs);

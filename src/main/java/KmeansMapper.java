@@ -37,7 +37,18 @@ class KmeansMapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Clus
     }
 
     private static int getNearest(Point pt) {
-        return -1;
+        int id_nearest = 0;
+        Point nearest = oldcentroids.get(0);
+        double min_dist = nearest.distance(pt);
+        for (int i = 0; i < oldcentroids.size(); i++)  {
+            Point centroid = oldcentroids.get(i);
+            double dist = centroid.distance(pt);
+            if(dist < min_dist) {
+                id_nearest = i;
+                min_dist = dist;
+            }
+        }
+        return id_nearest;
     }
 
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException
