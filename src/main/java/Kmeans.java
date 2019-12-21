@@ -36,7 +36,7 @@ public class Kmeans {
         conf.setInt("k", k);
         conf.setInt("col", col);
         conf.setInt( "coordinatesCount", coordsCount );
-        //conf.set("centroids", "centroids0");
+        conf.set("centroids", "centroids0");
 
         // Main loop
         while(!conf.getBoolean( KmeansReducer.ConfStringHasConverged, false ))
