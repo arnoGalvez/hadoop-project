@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
@@ -40,8 +41,13 @@ public class Kmeans {
         conf.set("centroids", centers.toString());
 
         FileSystem outputRm = FileSystem.get(output.toUri(), conf);
+        FileSystem centroidsRm = FileSystem.get(centers.toUri(), conf);
         if(outputRm.exists(output)) {
             outputRm.delete(output, true);
+        }
+        if (centroidsRm.exists( centers ))
+        {
+            centroidsRm.delete( centers, true );
         }
 
         // Default values for centroids
