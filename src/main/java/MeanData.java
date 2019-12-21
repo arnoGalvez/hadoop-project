@@ -18,6 +18,13 @@ public class MeanData implements Writable {
         Point sum = null;
     }*/
 
+    public MeanData(MeanData meanData)
+    {
+        pointsCount = meanData.pointsCount;
+        coordsCount = meanData.coordsCount;
+        sum = meanData.sum;
+    }
+
     public MeanData(int pointsCount, Point sum)
     {
         this.pointsCount = pointsCount;
