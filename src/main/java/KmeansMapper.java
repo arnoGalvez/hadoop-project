@@ -1,7 +1,6 @@
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -16,8 +15,6 @@ class KmeansMapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Clus
     private static int col;// Coordinates starting columns
     private static int coordinatesCount;
     private static List<Point> oldcentroids = new ArrayList<Point>();
-    private final static IntWritable one = new IntWritable( 1 );
-    private Text word = new Text();
 
 
     public void setup (Context context) throws IOException, InterruptedException
@@ -36,21 +33,6 @@ class KmeansMapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Clus
         }
     }
 
-    private static int getNearest(Point pt) {
-        int id_nearest = 0;
-        Point nearest = oldcentroids.get(0);
-        double min_dist = nearest.distance(pt);
-        for (int i = 0; i < oldcentroids.size(); i++)  {
-            Point centroid = oldcentroids.get(i);
-            double dist = centroid.distance(pt);
-            if(dist < min_dist) {
-                id_nearest = i;
-                min_dist = dist;
-            }
-        }
-        return id_nearest;
-    }
-
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException
     {
         String[] tokens = value.toString().split(",");
@@ -58,7 +40,7 @@ class KmeansMapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Clus
         coords.add(Double.parseDouble(tokens[col]));
         Point pt = new Point(coords);
 
-        int nearest = getNearest(pt);
+        int nearest = Point.getNearest(oldcentroids, pt);
         MeanData centroid = new MeanData(1, oldcentroids.get(nearest));
         Cluster c = new Cluster(nearest);
         context.write(c, centroid);

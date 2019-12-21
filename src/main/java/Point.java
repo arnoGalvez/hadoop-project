@@ -61,6 +61,21 @@ class Point {
     return res;
   }
 
+  public static int getNearest(List<Point> pts, Point pt) {
+    int id_nearest = 0;
+    Point nearest = pts.get(0);
+    double min_dist = nearest.distance(pt);
+    for (int i = 0; i < pts.size(); i++)  {
+      Point centroid = pts.get(i);
+      double dist = centroid.distance(pt);
+      if(dist < min_dist) {
+        id_nearest = i;
+        min_dist = dist;
+      }
+    }
+    return id_nearest;
+  }
+
   public static Point add(Point lhs, Point rhs) {
     Point res = new Point(lhs);
     return res.addCoords(rhs);
