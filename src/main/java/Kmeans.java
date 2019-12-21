@@ -5,6 +5,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -43,6 +44,22 @@ public class Kmeans {
             outputRm.delete(output, true);
         }
 
+        // Default values for centroids
+
+        SequenceFile.Writer centerWriter = SequenceFile.createWriter( conf,
+                                                                      SequenceFile.Writer.file(centers),
+                                                                      SequenceFile.Writer.keyClass(Cluster.class),
+                                                                      SequenceFile.Writer.valueClass(MeanData.class));
+        for (int i = 0; i < k; ++i)
+        {
+            Cluster cluster = new Cluster( i );
+            MeanData meanData = new MeanData( 1, new Point( 1 ) );
+            centerWriter.append( cluster, meanData );
+        }
+
+        centerWriter.close();
+
+        
         // Main loop
         while(!conf.getBoolean( KmeansReducer.ConfStringHasConverged, false ))
         {
