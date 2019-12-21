@@ -37,7 +37,7 @@ public class Kmeans {
         conf.setInt("k", k);
         conf.setInt("col", col);
         conf.setInt( "coordinatesCount", coordsCount );
-        conf.set("centroids", "centroids0");
+        conf.set("centroids", centers.toString());
 
         FileSystem outputRm = FileSystem.get(output.toUri(), conf);
         if(outputRm.exists(output)) {
