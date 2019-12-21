@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.util.StringTokenizer;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
@@ -16,6 +17,7 @@ public class Kmeans {
     public static void main(String[] args) throws Exception
     {
         Configuration conf = new Configuration();
+        FileSystem fileSystem = FileSystem.get( conf );
 
         Path input = new Path(args[0]);
         Path output = new Path(args[1]);
@@ -32,21 +34,28 @@ public class Kmeans {
         conf.setInt("col", col);
         conf.set("centroids", "centroids0");
 
-        Job job = Job.getInstance( conf, "word pointsCount" );
-        job.setJarByClass( Kmeans.class );
-        job.setMapperClass( KmeansMapper.class );
-        //job.setCombinerClass( IntSumReducer.class );
+        // Main loop
+        while(!conf.getBoolean( KmeansReducer.ConfStringHasConverged, false ))
+        {
+            Job job = Job.getInstance( conf, "Kmeans compute" );
+            job.setJarByClass( Kmeans.class );
+            job.setMapperClass( KmeansMapper.class );
+            //job.setCombinerClass( IntSumReducer.class );
 
-        job.setReducerClass( KmeansReducer.class );
-        job.setOutputKeyClass( Cluster.class );
-        job.setOutputValueClass( MeanData.class );
+            job.setReducerClass( KmeansReducer.class );
+            job.setOutputKeyClass( Cluster.class );
+            job.setOutputValueClass( MeanData.class );
 
-        FileInputFormat.addInputPath( job, input );
-        FileOutputFormat.setOutputPath( job, output );
+            FileInputFormat.addInputPath( job, input );
+            FileOutputFormat.setOutputPath( job, output );
+            job.waitForCompletion( true );
 
-        // Main while loop here
+            fileSystem.delete( output, true );
+        }
 
-        System.exit( job.waitForCompletion( true ) ? 0 : 1 );
+
+
+        System.exit( 1 );
     }
 
     public static class TokenizerMapper extends Mapper<Object, Text, Text, IntWritable> {
