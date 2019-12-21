@@ -23,6 +23,7 @@ public class Kmeans {
 
         conf.setInt("k", k);
         conf.setInt("col", col);
+        conf.set("centroids", "centroids0");
 
         Job job = Job.getInstance( conf, "word count" );
         job.setJarByClass( Kmeans.class );
