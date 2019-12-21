@@ -24,7 +24,7 @@ public class FinalMapper extends Mapper<Object, Text, Cluster, Text> {
         Path filename  = new Path(conf.get("centroids"));
         SequenceFile.Reader reader = new SequenceFile.Reader(conf, SequenceFile.Reader.file(filename));
         Cluster  key      = new Cluster(0);
-        MeanData centroid = new MeanData();
+        MeanData centroid = new MeanData( 1, new Point( 1 ));
         for (int i = 0; i < k; i++) {
             reader.next(key, centroid);
             oldcentroids.add(centroid.ComputeMean());
