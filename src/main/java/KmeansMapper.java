@@ -36,7 +36,8 @@ class KmeansMapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Clus
             reader.next(key, centroid);
             oldcentroids.add(centroid.ComputeMean());
         }
-        reader.close();
+        throw new IOException("Pts " + oldcentroids);
+        // reader.close();
     }
 
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException
