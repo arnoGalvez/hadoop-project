@@ -74,6 +74,9 @@ public class Kmeans {
         long hasConverged = 0;
         while(hasConverged == 0)
         {
+            if (centreOutRm.exists(centersout)) {
+                centreOutRm.delete(centersout, true);
+            }
             Job job = Job.getInstance( conf, "Kmeans compute" );
             job.setJarByClass( Kmeans.class );
             job.setMapperClass( KmeansMapper.class );
