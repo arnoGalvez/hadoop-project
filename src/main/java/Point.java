@@ -4,6 +4,7 @@ import java.util.Random;
 
 class Point {
   private List<Double> coords;// = new ArrayList<Double>();
+  private static Random r = new Random(  );
 
   public Point(int n) {
     coords = new ArrayList<Double>( n );
@@ -39,7 +40,6 @@ class Point {
   static public Point RandomPoint(int n, Double min, Double max)
   {
     Point ret = new Point( n );
-    Random r = new Random(  );
     for (int i = 0; i < ret.coords.size(); ++i )
     {
       ret.coords.set( i, min + (max - min) * r.nextDouble() );
