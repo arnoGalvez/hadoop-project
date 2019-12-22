@@ -19,6 +19,8 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
 
     static final String ConfStringHasConverged = "HasConverged";
 
+    public enum CONVERGENCE_COUNTER {COUNTER}
+
     boolean HasConverged(HashMap<IntWritable, MeanData> oldCentroids) throws IOException
     {
         final double eps = 0.1;
@@ -80,7 +82,9 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
         centerReader.close();
 
         boolean hasConverged = HasConverged( oldCentroids );
-        conf.setBoolean( ConfStringHasConverged, hasConverged );
+
+        context.getCounter( CONVERGENCE_COUNTER.COUNTER ).setValue( hasConverged ? 1 : 0 );
+
         if (!hasConverged)
         {
             SequenceFile.Writer centerWriter = SequenceFile.createWriter(conf,

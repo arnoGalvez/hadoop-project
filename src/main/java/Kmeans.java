@@ -66,7 +66,8 @@ public class Kmeans {
 
         
         // Main loop
-        while(!conf.getBoolean( KmeansReducer.ConfStringHasConverged, true ))
+        long hasConverged = 0;
+        while(hasConverged == 0)
         {
             Job job = Job.getInstance( conf, "Kmeans compute" );
             job.setJarByClass( Kmeans.class );
@@ -81,6 +82,8 @@ public class Kmeans {
             FileInputFormat.addInputPath( job, input );
             FileOutputFormat.setOutputPath( job, output );
             job.waitForCompletion( true );
+
+            hasConverged = job.getCounters().findCounter( KmeansReducer.CONVERGENCE_COUNTER.COUNTER ).getValue();
 
             fileSystem.delete( output, true );
         }
