@@ -24,6 +24,7 @@ public class Kmeans {
         Path input = new Path(args[0]);
         Path output = new Path(args[1]);
         Path centers = new Path(input.getParent().toString() + "/centroids");
+        Path centersout = new Path(input.getParent().toString() + "/centroidsOut");
 
         conf.setBoolean(KmeansReducer.ConfStringHasConverged, false);
 
@@ -41,12 +42,15 @@ public class Kmeans {
 
         FileSystem outputRm = FileSystem.get(output.toUri(), conf);
         FileSystem centroidsRm = FileSystem.get(centers.toUri(), conf);
+        FileSystem centreOutRm = FileSystem.get(centersout.toUri(), conf);
         if(outputRm.exists(output)) {
             outputRm.delete(output, true);
         }
-        if (centroidsRm.exists( centers ))
-        {
+        if (centroidsRm.exists( centers )) {
             centroidsRm.delete( centers, true );
+        }
+        if (centreOutRm.exists(centersout)) {
+            centreOutRm.delete(centersout, true);
         }
         centroidsRm.close();;
         outputRm.close();
@@ -81,7 +85,7 @@ public class Kmeans {
             job.setOutputValueClass( MeanData.class );
 
             FileInputFormat.addInputPath( job, input );
-            FileOutputFormat.setOutputPath( job, centers );
+            FileOutputFormat.setOutputPath( job, centersout );
             job.waitForCompletion( true );
 
             hasConverged = job.getCounters().findCounter( KmeansReducer.CONVERGENCE_COUNTER.COUNTER ).getValue();
@@ -90,11 +94,11 @@ public class Kmeans {
         Job writeCluster = Job.getInstance( conf, "Write clusters" );
         writeCluster.setMapperClass(FinalMapper.class);
         writeCluster.setReducerClass(FinalReducer.class);
-        FileInputFormat.addInputPath( writeCluster, centers );
+        FileInputFormat.addInputPath( writeCluster, centersout );
         FileOutputFormat.setOutputPath(writeCluster, output);
 
-        FileSystem fileSystem = FileSystem.get( centers.toUri(), conf );
-        fileSystem.delete( centers, true );
+        FileSystem fileSystem = FileSystem.get( centersout.toUri(), conf );
+        fileSystem.delete( centersout, true );
         fileSystem.close();
 
         System.exit( 0 );

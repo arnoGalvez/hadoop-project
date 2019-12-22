@@ -29,6 +29,7 @@ public class FinalMapper extends Mapper<Object, Text, Cluster, Text> {
             reader.next(key, centroid);
             oldcentroids.add(centroid.ComputeMean());
         }
+        reader.close();
     }
 
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
