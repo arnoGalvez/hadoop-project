@@ -25,7 +25,7 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
     {
         ++iterationCount;
 
-        final double eps = 0.1;
+        final double eps = 99999999999.999;
         Iterator<Integer> clusterIterator = newCentroids.keySet().iterator();
         int k = 0;
         while (clusterIterator.hasNext())
