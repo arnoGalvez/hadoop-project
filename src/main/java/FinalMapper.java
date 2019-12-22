@@ -1,3 +1,5 @@
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
@@ -9,13 +11,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.apache.hadoop.fs.FileSystem.LOG;
 
-public class FinalMapper extends Mapper<Object, Text, Cluster, Text> {
+class FinalMapper extends Mapper<Object, Text, Cluster, Text> {
     private static int k;
     private static int col;// Coordinates starting columns
     private static int coordinatesCount;
     private static List<Point> oldcentroids = new ArrayList<Point>();
+    private static final Log LOG = LogFactory.getLog(FinalMapper.class);
 
     public void setup (Context context) throws IOException, InterruptedException
     {
