@@ -41,6 +41,7 @@ class KmeansMapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Clus
 
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException
     {
+        System.out.println(value);
         String[] tokens = value.toString().split( "," );
         List<Double> coords = new ArrayList<Double>();
         try {
