@@ -27,20 +27,12 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
         {
             IntWritable cluster = clusterIterator.next();
             Point point1 = newCentroids.get( cluster ).ComputeMean();
-            Point point2 = null;
-            try
-            {
-                MeanData meanData2 = oldCentroids.get( cluster );
-                point2 = meanData2.ComputeMean();
-            }
-            catch ( Exception e )
-            {
-                throw new IOException( e.getMessage() + ".\n oldCentrois was " + oldCentroids.toString() );
-            }
+            Point point2 = oldCentroids.get( cluster ).ComputeMean();
             Point vec = Point.sub( point1, point2 );
             double sqrDist = vec.norm();
             if (sqrDist > eps)
             {
+                System.err.println( "No convergence yet. The error is " + sqrDist );
                 return false;
             }
 
