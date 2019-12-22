@@ -72,7 +72,7 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
             oldCentroids.put(oldCluster, oldMeanData);
             ++count;
         }
-        if (count == 0)
+        if (count == 0 || count != conf.getInt( "k", 0 ))
         {
             throw new IOException("Centroids file seems empty");
         }
