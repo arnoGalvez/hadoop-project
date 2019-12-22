@@ -1,8 +1,12 @@
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -97,7 +101,7 @@ public class Kmeans {
 
         Job writeCluster = Job.getInstance( conf, "Write clusters" );
         writeCluster.setJarByClass( Text.class );
-        writeCluster.setMapperClass(FinalMapper.class);
+        writeCluster.setMapperClass(ClusterMapper.class);
         writeCluster.setReducerClass(FinalReducer.class);
         FileInputFormat.addInputPath( writeCluster, input );
         FileOutputFormat.setOutputPath(writeCluster, output);
@@ -115,13 +119,12 @@ public class Kmeans {
         System.exit( 0 );
     }
 
-    public static class TokenizerMapper extends Mapper<Object, Text, Text, IntWritable> {
-
+    static class ClusterMapper extends Mapper<Object, Text, Cluster, Text> {
         private static int k;
         private static int col;// Coordinates starting columns
         private static int coordinatesCount;
-        private final static IntWritable one = new IntWritable( 1 );
-        private Text word = new Text();
+        private static List<Point> oldcentroids = new ArrayList<Point>();
+        private static final Log LOG = LogFactory.getLog(FinalMapper.class);
 
         public void setup (Context context) throws IOException, InterruptedException
         {
@@ -129,17 +132,32 @@ public class Kmeans {
             k   = conf.getInt("k", -1);
             col = conf.getInt("col", -1);
             coordinatesCount = conf.getInt("coordinatesCount", 0);
+            Path filename  = new Path(conf.get("centroids"));
+            SequenceFile.Reader reader = new SequenceFile.Reader(conf, SequenceFile.Reader.file(filename));
+            Cluster  key      = new Cluster(0);
+            MeanData centroid = new MeanData( 1, new Point( 1 ));
+            for (int i = 0; i < k; i++) {
+                reader.next(key, centroid);
+                oldcentroids.add(centroid.ComputeMean());
+            }
+            reader.close();
         }
 
-        public void map(Object key, Text value, Context context) throws IOException, InterruptedException
-        {
-            /* Get all columns */
+        public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             String[] tokens = value.toString().split(",");
+            List<Double> coords = new ArrayList<Double>();
+            Point pt = null;
+            try {
+                coords.add(Double.parseDouble(tokens[col]));
+                pt = new Point(coords);
+            } catch (Exception e) {
 
-            StringTokenizer itr = new StringTokenizer( value.toString(), "," );
-            while ( itr.hasMoreTokens() ) {
-                /*word.set( itr.nextToken() );
-                context.write( word, one );*/
+                LOG.info( "FinalMapper: swallowing exception " + e.getMessage() );
+            }
+            if (pt != null) {
+                int nearest = Point.getNearest(oldcentroids, pt);
+                Cluster cluster = new Cluster(nearest);
+                context.write(cluster, value);
             }
         }
     }
