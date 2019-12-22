@@ -13,7 +13,7 @@ import java.util.Iterator;
 
 public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData> {
 
-    HashMap<Integer, MeanData> newCentroids = new HashMap<Integer, MeanData>();
+    static HashMap<Integer, MeanData> newCentroids = new HashMap<Integer, MeanData>();
 
     static final String ConfStringHasConverged = "HasConverged";
 
