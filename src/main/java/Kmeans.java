@@ -96,8 +96,8 @@ public class Kmeans {
         // }
 
         Job writeCluster = Job.getInstance( conf, "Write clusters" );
+        writeCluster.setJarByClass( Text.class );
         writeCluster.setMapperClass(FinalMapper.class);
-	    writeCluster.setJarByClass( Text.class );
         writeCluster.setReducerClass(FinalReducer.class);
         FileInputFormat.addInputPath( writeCluster, input );
         FileOutputFormat.setOutputPath(writeCluster, output);
