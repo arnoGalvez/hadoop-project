@@ -64,10 +64,12 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
         }
         if (count == 0 || count != conf.getInt( "k", 0 ))
         {
+            centerReader.close();
             throw new IOException("Centroids file seems empty");
         }
 
         centerReader.close();
+
     }
 
     @Override
@@ -89,7 +91,7 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
     {
         Configuration conf = context.getConfiguration();
         Path centersPath = new Path(conf.get("centroids"));
-        FileSystem fs = FileSystem.get( centersPath.toUri(), conf );
+
 
 
         SequenceFile.Reader centerReader = new SequenceFile.Reader( conf, SequenceFile.Reader.file(centersPath));
@@ -127,11 +129,13 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
                                                                          SequenceFile.Writer.keyClass(Cluster.class),
                                                                          SequenceFile.Writer.valueClass(MeanData.class));
 
+            FileSystem fs = FileSystem.get( centersPath.toUri(), conf );
             fs.truncate( centersPath, 0 );
             for (HashMap.Entry<Integer, MeanData> entry : newCentroids.entrySet())
             {
                 centerWriter.append( new Cluster( entry.getKey()), entry.getValue() );
             }
+            fs.close();
             centerWriter.close();
         }
 
