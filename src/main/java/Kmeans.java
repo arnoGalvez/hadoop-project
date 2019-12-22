@@ -119,7 +119,7 @@ public class Kmeans {
         System.exit( 0 );
     }
 
-    static class ClusterMapper extends Mapper<Object, Text, Cluster, Text> {
+    public static class ClusterMapper extends Mapper<Object, Text, Cluster, Text> {
         private static int k;
         private static int col;// Coordinates starting columns
         private static int coordinatesCount;
