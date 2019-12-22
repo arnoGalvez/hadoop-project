@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
+import jdk.internal.jline.internal.TestAccessible;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -102,7 +103,7 @@ public class Kmeans {
         FileOutputFormat.setOutputPath(writeCluster, output);
 
 	    writeCluster.setOutputKeyClass( Cluster.class );
-	    writeCluster.setOutputValueClass( MeanData.class );
+	    writeCluster.setOutputValueClass( Text.class );
 
 	
       	writeCluster.waitForCompletion( true );
