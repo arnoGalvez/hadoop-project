@@ -4,7 +4,7 @@ import java.util.Random;
 
 class Point {
   private List<Double> coords;// = new ArrayList<Double>();
-  private static Random r = new Random(  );
+  private static Random r = new Random( 42 );
 
   public Point(int n) {
     coords = new ArrayList<Double>( n );
