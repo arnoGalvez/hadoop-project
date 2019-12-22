@@ -48,7 +48,8 @@ public class Kmeans {
         {
             centroidsRm.delete( centers, true );
         }
-
+        centroidsRm.close();;
+        outputRm.close();
         // Default values for centroids
 
         SequenceFile.Writer centerWriter = SequenceFile.createWriter( conf,
