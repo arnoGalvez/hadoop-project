@@ -81,15 +81,21 @@ public class Kmeans {
             job.setOutputValueClass( MeanData.class );
 
             FileInputFormat.addInputPath( job, input );
-            FileOutputFormat.setOutputPath( job, output );
+            FileOutputFormat.setOutputPath( job, centers );
             job.waitForCompletion( true );
 
             hasConverged = job.getCounters().findCounter( KmeansReducer.CONVERGENCE_COUNTER.COUNTER ).getValue();
-
-            FileSystem fileSystem = FileSystem.get( conf );
-            fileSystem.delete( output, true );
-            fileSystem.close();
         }
+
+        Job writeCluster = Job.getInstance( conf, "Write clusters" );
+        writeCluster.setMapperClass(FinalMapper.class);
+        writeCluster.setReducerClass(FinalReducer.class);
+        FileInputFormat.addInputPath( writeCluster, centers );
+        FileOutputFormat.setOutputPath(writeCluster, output);
+
+        FileSystem fileSystem = FileSystem.get( centers.toUri(), conf );
+        fileSystem.delete( centers, true );
+        fileSystem.close();
 
         System.exit( 0 );
     }
