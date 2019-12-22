@@ -84,8 +84,8 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
         centerReader.close();
 
         boolean hasConverged = HasConverged( oldCentroids );
-        conf.setBoolean( ConfStringHasConverged, hasConverged );
-        if (!hasConverged)
+        conf.setBoolean( ConfStringHasConverged, true );
+        /*if (!hasConverged)
         {
             SequenceFile.Writer centerWriter = SequenceFile.createWriter(conf,
                                                                          SequenceFile.Writer.file(centersPath),
@@ -97,7 +97,7 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
                 centerWriter.append( entry.getKey(), entry.getValue() );
             }
             centerWriter.close();
-        }
+        }*/
 
 
 
