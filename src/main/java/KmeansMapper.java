@@ -11,6 +11,8 @@ import org.apache.hadoop.io.SequenceFile;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import javax.print.DocFlavor;
+
 
 class KmeansMapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Cluster, MeanData> {
     private static int k;

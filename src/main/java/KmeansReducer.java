@@ -124,18 +124,18 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
 
         if (!hasConverged)
         {
+            FileSystem fs = FileSystem.get( centersPath.toUri(), conf );
+            fs.truncate( centersPath, 0 );
+            fs.close();
             SequenceFile.Writer centerWriter = SequenceFile.createWriter(conf,
                                                                          SequenceFile.Writer.file(centersPath),
                                                                          SequenceFile.Writer.keyClass(Cluster.class),
                                                                          SequenceFile.Writer.valueClass(MeanData.class));
-
-            FileSystem fs = FileSystem.get( centersPath.toUri(), conf );
-            fs.truncate( centersPath, 0 );
+            
             for (HashMap.Entry<Integer, MeanData> entry : newCentroids.entrySet())
             {
                 centerWriter.append( new Cluster( entry.getKey()), entry.getValue() );
             }
-            fs.close();
             centerWriter.close();
         }
 
