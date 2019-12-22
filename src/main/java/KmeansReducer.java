@@ -19,6 +19,10 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
 
     static final String ConfStringHasConverged = "HasConverged";
 
+    static boolean hasConverged() {
+        return true;
+    }
+
     boolean HasConverged(HashMap<IntWritable, MeanData> oldCentroids) throws IOException
     {
         final double eps = 0.1;
