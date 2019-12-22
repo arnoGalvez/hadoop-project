@@ -1,5 +1,8 @@
+import org.graalvm.compiler.phases.graph.ScopedPostOrderNodeIterator;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 class Point {
   private List<Double> coords;// = new ArrayList<Double>();
@@ -27,6 +30,18 @@ class Point {
   public Point(Point pt) {
     coords = new ArrayList<Double>( pt.coords.size() );
     this.coords.addAll(pt.coords);
+  }
+
+  static public Point RandomPoint(int n, Double min, Double max)
+  {
+    Point ret = new Point( n );
+    Random r = new Random(  );
+    for (int i = 0; i < ret.coords.size(); ++i )
+    {
+      ret.coords.set( i, min + (max - min) * r.nextDouble() );
+    }
+
+    return ret;
   }
 
   private Point addCoords(Point pt) {

@@ -59,7 +59,7 @@ public class Kmeans {
         for (int i = 0; i < k; ++i)
         {
             Cluster cluster = new Cluster( i );
-            MeanData meanData = new MeanData( 1, new Point( 1 ) );
+            MeanData meanData = new MeanData( 1, Point.RandomPoint( 1, -100.0, 100.0 ) );
             centerWriter.append( cluster, meanData );
         }
 
