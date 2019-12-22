@@ -19,8 +19,12 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
 
     public enum CONVERGENCE_COUNTER {COUNTER}
 
+    static int iterationCount = 0;
+
     boolean HasConverged(HashMap<Integer, MeanData> oldCentroids, int expectedIterations) throws IOException
     {
+        ++iterationCount;
+
         final double eps = 0.1;
         Iterator<Integer> clusterIterator = newCentroids.keySet().iterator();
         int k = 0;
@@ -42,6 +46,12 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
         {
             throw new IOException( "Wrong number of clusters. Was " + k + " expected " + expectedIterations + ".\n centroids: " + newCentroids.toString() );
         }
+
+        if (iterationCount == 1)
+        {
+            throw  new IOException( "Weird convergence in only 1 iteration. Oldcentroids :\n" + oldCentroids.toString() + "\nNewCentroids: " + newCentroids.toString() );
+        }
+
         return true;
     }
 
@@ -131,7 +141,7 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
                                                                          SequenceFile.Writer.file(centersPath),
                                                                          SequenceFile.Writer.keyClass(Cluster.class),
                                                                          SequenceFile.Writer.valueClass(MeanData.class));
-            
+
             for (HashMap.Entry<Integer, MeanData> entry : newCentroids.entrySet())
             {
                 centerWriter.append( new Cluster( entry.getKey()), entry.getValue() );
