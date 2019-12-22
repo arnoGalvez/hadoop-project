@@ -86,7 +86,7 @@ public class Kmeans {
             hasConverged = job.getCounters().findCounter( KmeansReducer.CONVERGENCE_COUNTER.COUNTER ).getValue();
 
             fileSystem.delete( output, true );
-        }
+        } while(!conf.getBoolean( KmeansReducer.ConfStringHasConverged, true ));
 
         System.exit( 0 );
     }

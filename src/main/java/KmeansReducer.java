@@ -97,7 +97,7 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
                 centerWriter.append( entry.getKey(), entry.getValue() );
             }
             centerWriter.close();
-        }
+        }*/
 
 
 
