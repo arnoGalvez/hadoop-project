@@ -42,16 +42,14 @@ public class Kmeans {
 
         FileSystem outputRm = FileSystem.get(output.toUri(), conf);
         FileSystem centroidsRm = FileSystem.get(centers.toUri(), conf);
-        FileSystem centreOutRm = FileSystem.get(centersout.toUri(), conf);
+
         if(outputRm.exists(output)) {
             outputRm.delete(output, true);
         }
         if (centroidsRm.exists( centers )) {
             centroidsRm.delete( centers, true );
         }
-        if (centreOutRm.exists(centersout)) {
-            centreOutRm.delete(centersout, true);
-        }
+
         centroidsRm.close();;
         outputRm.close();
         // Default values for centroids
@@ -74,9 +72,11 @@ public class Kmeans {
         long hasConverged = 0;
         while(hasConverged == 0)
         {
+            FileSystem centreOutRm = FileSystem.get(centersout.toUri(), conf);
             if (centreOutRm.exists(centersout)) {
                 centreOutRm.delete(centersout, true);
             }
+            centreOutRm.close();
             Job job = Job.getInstance( conf, "Kmeans compute" );
             job.setJarByClass( Kmeans.class );
             job.setMapperClass( KmeansMapper.class );
