@@ -105,6 +105,22 @@ class Point {
     }
     return id_nearest;
   }
+  @Override
+  public boolean equals(Object o)
+  {
+    if (o.getClass() != getClass())
+      return false;
+
+    Point point = (Point)o;
+    if (point.size() != size())
+    for (int i = 0; i < size(); ++i)
+    {
+      if (point.coords.get( i ) != coords.get( i ))
+        return false;
+    }
+
+    return true;
+  }
 
   public static Point add(Point lhs, Point rhs) {
     Point res = new Point(lhs);

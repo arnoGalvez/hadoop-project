@@ -132,10 +132,10 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
         {
             if (oldCluster.GetId() == lastId)
             {
-                throw new IOException( "Read the same cluster two times. Cluster was " + lastId );
+                throw new IOException( "Read the same cluster twice. Cluster was " + lastId );
             }
             lastId = oldCluster.GetId();
-            oldCentroids.put(new Integer( oldCluster.GetId() ), oldMeanData);
+            oldCentroids.put(oldCluster.GetId(), oldMeanData);
             ++count;
         }
         if (count == 0 || count != conf.getInt( "k", 0 ))
