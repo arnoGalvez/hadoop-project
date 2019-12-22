@@ -30,6 +30,12 @@ class Point {
     this.coords.addAll(pt.coords);
   }
 
+  @Override
+  public String toString()
+  {
+    return coords.toString();
+  }
+
   static public Point RandomPoint(int n, Double min, Double max)
   {
     Point ret = new Point( n );
