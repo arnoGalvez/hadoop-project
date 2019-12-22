@@ -60,9 +60,9 @@ public class Kmeans {
         // Default values for centroids
 
         SequenceFile.Writer centerWriter = SequenceFile.createWriter( conf,
-                                                                      SequenceFile.Writer.file(centers),
-                                                                      SequenceFile.Writer.keyClass(Cluster.class),
-                                                                      SequenceFile.Writer.valueClass(MeanData.class));
+                SequenceFile.Writer.file(centers),
+                SequenceFile.Writer.keyClass(Cluster.class),
+                SequenceFile.Writer.valueClass(MeanData.class));
         for (int i = 0; i < k; ++i)
         {
             Cluster cluster = new Cluster( i );
@@ -72,45 +72,45 @@ public class Kmeans {
 
         centerWriter.close();
 
-        
+
         // Main loop
         long hasConverged = 0;
         // while(hasConverged == 0)
         // {
-            FileSystem centreOutRm = FileSystem.get(centersout.toUri(), conf);
-            if (centreOutRm.exists(centersout)) {
-                centreOutRm.delete(centersout, true);
-            }
-            centreOutRm.close();
-            Job job = Job.getInstance( conf, "Kmeans compute" );
-            job.setJarByClass( Kmeans.class );
-            job.setMapperClass( KmeansMapper.class );
-            job.setNumReduceTasks( 1 );
-            //job.setCombinerClass( IntSumReducer.class );
+        FileSystem centreOutRm = FileSystem.get(centersout.toUri(), conf);
+        if (centreOutRm.exists(centersout)) {
+            centreOutRm.delete(centersout, true);
+        }
+        centreOutRm.close();
+        Job job = Job.getInstance( conf, "Kmeans compute" );
+        job.setJarByClass( Kmeans.class );
+        job.setMapperClass( KmeansMapper.class );
+        job.setNumReduceTasks( 1 );
+        //job.setCombinerClass( IntSumReducer.class );
 
-            job.setReducerClass( KmeansReducer.class );
-            job.setOutputKeyClass( Cluster.class );
-            job.setOutputValueClass( MeanData.class );
+        job.setReducerClass( KmeansReducer.class );
+        job.setOutputKeyClass( Cluster.class );
+        job.setOutputValueClass( MeanData.class );
 
-            FileInputFormat.addInputPath( job, input );
-            FileOutputFormat.setOutputPath( job, centersout );
-            job.waitForCompletion( true );
+        FileInputFormat.addInputPath( job, input );
+        FileOutputFormat.setOutputPath( job, centersout );
+        job.waitForCompletion( true );
 
-            hasConverged = job.getCounters().findCounter( KmeansReducer.CONVERGENCE_COUNTER.COUNTER ).getValue();
+        hasConverged = job.getCounters().findCounter( KmeansReducer.CONVERGENCE_COUNTER.COUNTER ).getValue();
         // }
 
         Job writeCluster = Job.getInstance( conf, "Write clusters" );
         writeCluster.setJarByClass( Text.class );
-        writeCluster.setMapperClass(ClusterMapper.class);
+        writeCluster.setMapperClass(Kmeans.ClusterMapper.class);
         writeCluster.setReducerClass(FinalReducer.class);
         FileInputFormat.addInputPath( writeCluster, input );
         FileOutputFormat.setOutputPath(writeCluster, output);
 
-	    writeCluster.setOutputKeyClass( Cluster.class );
-	    writeCluster.setOutputValueClass( Text.class );
+        writeCluster.setOutputKeyClass( Cluster.class );
+        writeCluster.setOutputValueClass( Text.class );
 
-	
-      	writeCluster.waitForCompletion( true );
+
+        writeCluster.waitForCompletion( true );
 
         FileSystem fileSystem = FileSystem.get( centersout.toUri(), conf );
         fileSystem.delete( centersout, true );
