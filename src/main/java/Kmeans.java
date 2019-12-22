@@ -19,7 +19,7 @@ public class Kmeans {
     public static void main(String[] args) throws Exception
     {
         Configuration conf = new Configuration();
-        FileSystem fileSystem = FileSystem.get( conf );
+
 
         Path input = new Path(args[0]);
         Path output = new Path(args[1]);
@@ -86,7 +86,9 @@ public class Kmeans {
 
             hasConverged = job.getCounters().findCounter( KmeansReducer.CONVERGENCE_COUNTER.COUNTER ).getValue();
 
+            FileSystem fileSystem = FileSystem.get( conf );
             fileSystem.delete( output, true );
+            fileSystem.close();
         }
 
         System.exit( 0 );
