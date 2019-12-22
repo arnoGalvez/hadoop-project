@@ -2,7 +2,7 @@
 #Compiler
 
 ```sh
-mvn pachage
+mvn package
 ```
 
 #Executer
