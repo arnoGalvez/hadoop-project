@@ -31,6 +31,11 @@ public class MeanData implements Writable {
         return "Points : " + pointsCount + " - Mean : " + sum;
     }
 
+    public boolean equals(MeanData other)
+    {
+        return  other.pointsCount == pointsCount && other.coordsCount == coordsCount && other.sum.equals(sum);
+    }
+
     public MeanData(int pointsCount, Point sum)
     {
         this.pointsCount = pointsCount;
