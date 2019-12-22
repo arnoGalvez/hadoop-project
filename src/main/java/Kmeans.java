@@ -67,7 +67,7 @@ public class Kmeans {
         
         // Main loop
         long hasConverged = 0;
-        while(hasConverged == 0)
+        while(hasConverged != 0)
         {
             Job job = Job.getInstance( conf, "Kmeans compute" );
             job.setJarByClass( Kmeans.class );
