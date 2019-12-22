@@ -85,7 +85,7 @@ public class Kmeans {
             fileSystem.delete( output, true );
         }
 
-        System.exit( 1 );
+        System.exit( 0 );
     }
 
     public static class TokenizerMapper extends Mapper<Object, Text, Text, IntWritable> {
