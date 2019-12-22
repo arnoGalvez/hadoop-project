@@ -107,7 +107,7 @@ public class Kmeans {
         FileInputFormat.addInputPath( writeCluster, input );
         FileOutputFormat.setOutputPath(writeCluster, output);
 
-        writeCluster.setOutputKeyClass( NullWritable.class );
+        writeCluster.setOutputKeyClass( Cluster.class );
         writeCluster.setOutputValueClass( Text.class );
 
 
