@@ -66,7 +66,7 @@ public class Kmeans {
 
         
         // Main loop
-        while(!conf.getBoolean( KmeansReducer.ConfStringHasConverged, false ))
+        while(!conf.getBoolean( KmeansReducer.ConfStringHasConverged, true ))
         {
             Job job = Job.getInstance( conf, "Kmeans compute" );
             job.setJarByClass( Kmeans.class );
