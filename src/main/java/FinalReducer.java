@@ -1,9 +1,10 @@
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.io.Text;
 
 import java.io.IOException;
 
-public class FinalReducer extends Reducer<Cluster, Text, Cluster, Text> {
+public class FinalReducer extends Reducer<Cluster, Text, NullWritable, Text> {
     public void reduce(Cluster cluster,
                        Iterable<Text> rows,
                        Context context) throws IOException, InterruptedException
@@ -13,7 +14,7 @@ public class FinalReducer extends Reducer<Cluster, Text, Cluster, Text> {
             String content = row.toString();
             content += ending;
             Text output = new Text(content);
-            context.write(cluster, output);
+            context.write(NullWritable.get(), output);
         }
     }
 }

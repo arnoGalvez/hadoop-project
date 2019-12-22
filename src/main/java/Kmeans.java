@@ -11,6 +11,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -101,12 +102,12 @@ public class Kmeans {
 
         Job writeCluster = Job.getInstance( conf, "Write clusters" );
         writeCluster.setJarByClass( Kmeans.class );
-        writeCluster.setMapperClass(ClusterMapper.class);
+        writeCluster.setMapperClass(FinalMapper.class);
         writeCluster.setReducerClass(FinalReducer.class);
         FileInputFormat.addInputPath( writeCluster, input );
         FileOutputFormat.setOutputPath(writeCluster, output);
 
-        writeCluster.setOutputKeyClass( Cluster.class );
+        writeCluster.setOutputKeyClass( NullWritable.class );
         writeCluster.setOutputValueClass( Text.class );
 
 
