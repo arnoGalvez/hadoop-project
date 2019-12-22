@@ -23,7 +23,7 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
 
     boolean HasConverged(HashMap<IntWritable, MeanData> oldCentroids) throws IOException
     {
-        final double eps = 0.1;
+        final double eps = 1;
         Iterator<IntWritable> clusterIterator = newCentroids.keySet().iterator();
         while (clusterIterator.hasNext())
         {
@@ -34,7 +34,7 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
             double sqrDist = vec.norm();
             if (sqrDist > eps)
             {
-                return true;
+                return false;
             }
 
         }
