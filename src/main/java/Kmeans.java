@@ -37,10 +37,13 @@ public class Kmeans {
         /* Set via configuration 'k' and the column onto do the clustering */
         int k = Integer.parseInt(args[2]);
         int col = Integer.parseInt(args[3]);
-
+        int colCount = args.length - 3;
 
         conf.setInt("k", k);
-        conf.setInt("col", col);
+        conf.setInt("colCount", colCount);
+        for (int i = 0; i < colCount; i++) {
+            conf.setInt("col" + i, Integer.parseInt(args[3 + i]));
+        }
         conf.set("centroids", centers.toString());
 
         FileSystem outputRm = FileSystem.get(output.toUri(), conf);
@@ -63,7 +66,7 @@ public class Kmeans {
                 SequenceFile.Writer.valueClass(MeanData.class));
         for (int i = k-1; i >= 0; --i) {
             Cluster cluster = new Cluster(i);
-            MeanData meanData = new MeanData(1, Point.RandomPoint(1, -100.0 * (double)i, 100.0 * (double)i));
+            MeanData meanData = new MeanData(1, Point.RandomPoint(colCount, -100.0 , 100.0 ));
             centerWriter.append(cluster, meanData);
         }
 

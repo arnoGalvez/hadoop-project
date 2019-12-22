@@ -16,8 +16,9 @@ import javax.print.DocFlavor;
 
 class KmeansMapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Cluster, MeanData> {
     private static int k;
-    private static int col;// Coordinates starting columns
+    private static int colCount;// Coordinates starting columns
     private static int coordinatesCount;
+    private static List<Integer> cols = new ArrayList<Integer>();
     private static List<Point> oldcentroids = new ArrayList<Point>();
     private static final Log LOG = LogFactory.getLog(KmeansMapper.class);
 
@@ -26,12 +27,15 @@ class KmeansMapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Clus
     {
         Configuration conf = context.getConfiguration();
         k   = conf.getInt("k", -1);
-        col = conf.getInt("col", -1);
+        colCount = conf.getInt("colCount", -1);
+        for (int i = 0; i < colCount; i++) {
+            cols.add(conf.getInt("col"+i, -1));
+        }
         coordinatesCount = conf.getInt("coordinatesCount", 0);
         Path   filename  = new Path(conf.get("centroids"));
         SequenceFile.Reader reader = new SequenceFile.Reader(conf, SequenceFile.Reader.file(filename));
         Cluster  key      = new Cluster(0);
-        MeanData centroid = new MeanData(1, new Point( 1 ));
+        MeanData centroid = new MeanData(1, new Point( colCount ));
         for (int i = 0; i < k; i++) {
             reader.next(key, centroid);
             oldcentroids.add(centroid.ComputeMean());
@@ -45,7 +49,9 @@ class KmeansMapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Clus
         String[] tokens = value.toString().split( "," );
         List<Double> coords = new ArrayList<Double>();
         try {
-            coords.add( Double.parseDouble( tokens[col] ) );
+            for(Integer col : cols) {
+                coords.add(Double.parseDouble(tokens[col]));
+            }
         } catch ( Exception e )
         {
             LOG.info( "KmeansMapper: swallowing exception " + e.getMessage() );
