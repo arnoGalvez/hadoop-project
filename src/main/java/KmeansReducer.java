@@ -49,7 +49,7 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
 
         if (iterationCount == 1)
         {
-            throw  new IOException( "Weird convergence in only 1 iteration. Oldcentroids :\n" + oldCentroids.toString() + "\nNewCentroids: " + newCentroids.toString() );
+            throw  new IOException( "Weird convergence in only 1 iteration.\nOldcentroids :\n" + oldCentroids.toString() + "\nNewCentroids: " + newCentroids.toString() );
         }
 
         return true;
