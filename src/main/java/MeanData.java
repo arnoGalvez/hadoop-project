@@ -25,6 +25,12 @@ public class MeanData implements Writable {
         sum = meanData.sum;
     }
 
+    @Override
+    public String toString()
+    {
+        return "Points : " + pointsCount + " - Mean : " + sum;
+    }
+
     public MeanData(int pointsCount, Point sum)
     {
         this.pointsCount = pointsCount;
