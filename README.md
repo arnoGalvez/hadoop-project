@@ -1,11 +1,11 @@
-#Projet Hadoop
-#Compiler
+#  Hadoop
+## Compiler
 
 ```sh
 mvn package
 ```
 
-#Executer
+# Executer
 
 ```sh
 yarn jar target/kmeannd <absolute-path-input> <absolute-path-output> k c1 c2 c3
