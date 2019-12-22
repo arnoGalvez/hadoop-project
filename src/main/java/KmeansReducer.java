@@ -32,15 +32,7 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
             double sqrDist = vec.norm();
             if (sqrDist > eps)
             {
-                try
-                {
-                    throw new IOException( "No convergence yet. The error is " + sqrDist );
-                }
-                catch ( Exception e )
-                {
-                    
-                }
-
+                System.err.println( "No convergence yet. The error is " + sqrDist );
                 return false;
             }
 
