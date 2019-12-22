@@ -40,7 +40,7 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
         }
         if (k != expectedIterations)
         {
-            throw new IOException( "Wrong number of clusters. Was " + k + " expected " + expectedIterations );
+            throw new IOException( "Wrong number of clusters. Was " + k + " expected " + expectedIterations + ".\n centroids: " + newCentroids.toString() );
         }
         return true;
     }
