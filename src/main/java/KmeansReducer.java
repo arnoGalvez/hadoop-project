@@ -23,7 +23,7 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
 
     boolean HasConverged(HashMap<IntWritable, MeanData> oldCentroids) throws IOException
     {
-        final double eps = 1;
+        final double eps = 0.1;
         Iterator<IntWritable> clusterIterator = newCentroids.keySet().iterator();
         while (clusterIterator.hasNext())
         {
@@ -59,8 +59,8 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
     protected void cleanup(Context context) throws IOException, InterruptedException
     {
         Configuration conf = context.getConfiguration();
-        FileSystem fs = FileSystem.get( conf );
         Path centersPath = new Path(conf.get("centroids"));
+        FileSystem fs = FileSystem.get( centersPath.toUri(), conf );
 
 
         SequenceFile.Reader centerReader = new SequenceFile.Reader( conf, SequenceFile.Reader.file(centersPath));
@@ -91,6 +91,7 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
                                                                          SequenceFile.Writer.file(centersPath),
                                                                          SequenceFile.Writer.keyClass(Cluster.class),
                                                                          SequenceFile.Writer.valueClass(MeanData.class));
+
             fs.truncate( centersPath, 0 );
             for (HashMap.Entry<IntWritable, MeanData> entry : newCentroids.entrySet())
             {
