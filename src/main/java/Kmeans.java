@@ -66,7 +66,7 @@ public class Kmeans {
 
         
         // Main loop
-        while(!KmeansReducer.hasConverged()/*conf.getBoolean( KmeansReducer.ConfStringHasConverged, true )*/)
+        do /*conf.getBoolean( KmeansReducer.ConfStringHasConverged, true )*/
         {
             Job job = Job.getInstance( conf, "Kmeans compute" );
             job.setJarByClass( Kmeans.class );
@@ -83,7 +83,7 @@ public class Kmeans {
             job.waitForCompletion( true );
 
             fileSystem.delete( output, true );
-        }
+        } while(!KmeansReducer.hasConverged());
 
         System.exit( 0 );
     }
