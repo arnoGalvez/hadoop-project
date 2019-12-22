@@ -92,7 +92,7 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
         {
             result = MeanData.Combine( result, means.iterator().next() );
         }
-        newCentroids.put( new Integer( cluster.GetId() ), result );
+        newCentroids.put( cluster.GetId(), result );
         context.write( cluster, result );
     }
 
