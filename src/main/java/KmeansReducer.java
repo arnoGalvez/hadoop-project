@@ -15,17 +15,17 @@ import java.util.Iterator;
 
 public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData> {
 
-    HashMap<Cluster, MeanData> newCentroids = new HashMap<Cluster, MeanData>();
+    HashMap<IntWritable, MeanData> newCentroids = new HashMap<IntWritable, MeanData>();
 
     static final String ConfStringHasConverged = "HasConverged";
 
-    boolean HasConverged(HashMap<Cluster, MeanData> oldCentroids) throws IOException
+    boolean HasConverged(HashMap<IntWritable, MeanData> oldCentroids) throws IOException
     {
         final double eps = 0.1;
-        Iterator<Cluster> clusterIterator = newCentroids.keySet().iterator();
+        Iterator<IntWritable> clusterIterator = newCentroids.keySet().iterator();
         while (clusterIterator.hasNext())
         {
-            Cluster cluster = clusterIterator.next();
+            IntWritable cluster = clusterIterator.next();
             Point point1 = newCentroids.get( cluster ).ComputeMean();
             Point point2 = null;
             try
@@ -58,7 +58,7 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
         {
             result = MeanData.Combine( result, means.iterator().next() );
         }
-        newCentroids.put( cluster, result );
+        newCentroids.put( new IntWritable( cluster.GetId() ), result );
         context.write( cluster, result );
     }
 
@@ -72,13 +72,13 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
 
         SequenceFile.Reader centerReader = new SequenceFile.Reader( conf, SequenceFile.Reader.file(centersPath));
 
-        HashMap<Cluster, MeanData> oldCentroids = new HashMap<Cluster, MeanData>();
+        HashMap<IntWritable, MeanData> oldCentroids = new HashMap<IntWritable, MeanData>();
         Cluster oldCluster = new Cluster(  );
         MeanData oldMeanData = new MeanData( 1, new Point( 1 ) );
         int count = 0;
         while (centerReader.next( oldCluster, oldMeanData ))
         {
-            oldCentroids.put(oldCluster, oldMeanData);
+            oldCentroids.put(new IntWritable( oldCluster.GetId() ), oldMeanData);
             ++count;
         }
         if (count == 0 || count != conf.getInt( "k", 0 ))
@@ -97,7 +97,7 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
                                                                          SequenceFile.Writer.keyClass(Cluster.class),
                                                                          SequenceFile.Writer.valueClass(MeanData.class));
             fs.truncate( centersPath, 0 );
-            for (HashMap.Entry<Cluster, MeanData> entry : newCentroids.entrySet())
+            for (HashMap.Entry<IntWritable, MeanData> entry : newCentroids.entrySet())
             {
                 centerWriter.append( entry.getKey(), entry.getValue() );
             }
