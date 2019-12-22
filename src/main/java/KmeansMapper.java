@@ -53,7 +53,7 @@ class KmeansMapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Clus
             Point pt = new Point(coords);
 
             int nearest = Point.getNearest(oldcentroids, pt);
-            MeanData centroid = new MeanData(1, oldcentroids.get(nearest));
+            MeanData centroid = new MeanData(1, pt);
             Cluster c = new Cluster(nearest);
             context.write(c, centroid);
         }
