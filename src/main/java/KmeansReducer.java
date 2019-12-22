@@ -13,9 +13,9 @@ import java.util.Iterator;
 
 public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData> {
 
-    static HashMap<Integer, MeanData> newCentroids = new HashMap<Integer, MeanData>();
+    static private HashMap<Integer, MeanData> newCentroids = new HashMap<Integer, MeanData>();
 
-    static final String ConfStringHasConverged = "HasConverged";
+    static public final String ConfStringHasConverged = "HasConverged";
 
     public enum CONVERGENCE_COUNTER {COUNTER}
 
@@ -43,6 +43,31 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
             throw new IOException( "Wrong number of clusters. Was " + k + " expected " + expectedIterations + ".\n centroids: " + newCentroids.toString() );
         }
         return true;
+    }
+
+    @Override
+    protected void setup(Context context) throws IOException, InterruptedException
+    {
+        super.setup( context );
+        Configuration conf = context.getConfiguration();
+        Path centersPath = new Path(conf.get("centroids"));
+
+        SequenceFile.Reader centerReader = new SequenceFile.Reader( conf, SequenceFile.Reader.file(centersPath));
+
+        Cluster oldCluster = new Cluster(  );
+        MeanData oldMeanData = new MeanData( 1, new Point( 1 ) );
+        int count = 0;
+        while (centerReader.next( oldCluster, oldMeanData ))
+        {
+            newCentroids.put(new Integer( oldCluster.GetId() ), oldMeanData);
+            ++count;
+        }
+        if (count == 0 || count != conf.getInt( "k", 0 ))
+        {
+            throw new IOException("Centroids file seems empty");
+        }
+
+        centerReader.close();
     }
 
     @Override
