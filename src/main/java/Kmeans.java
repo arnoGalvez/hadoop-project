@@ -70,8 +70,8 @@ public class Kmeans {
         
         // Main loop
         long hasConverged = 0;
-        while(hasConverged == 0)
-        {
+        // while(hasConverged == 0)
+        // {
             FileSystem centreOutRm = FileSystem.get(centersout.toUri(), conf);
             if (centreOutRm.exists(centersout)) {
                 centreOutRm.delete(centersout, true);
@@ -92,13 +92,20 @@ public class Kmeans {
             job.waitForCompletion( true );
 
             hasConverged = job.getCounters().findCounter( KmeansReducer.CONVERGENCE_COUNTER.COUNTER ).getValue();
-        }
+        // }
 
         Job writeCluster = Job.getInstance( conf, "Write clusters" );
         writeCluster.setMapperClass(FinalMapper.class);
+	writeCluster.setJarByClass( Kmeans.class );
         writeCluster.setReducerClass(FinalReducer.class);
-        FileInputFormat.addInputPath( writeCluster, centersout );
+        FileInputFormat.addInputPath( writeCluster, input );
         FileOutputFormat.setOutputPath(writeCluster, output);
+
+	writeCluster.setOutputKeyClass( Cluster.class );
+	writeCluster.setOutputValueClass( MeanData.class );
+
+	
+      	writeCluster.waitForCompletion( true );
 
         FileSystem fileSystem = FileSystem.get( centersout.toUri(), conf );
         fileSystem.delete( centersout, true );
