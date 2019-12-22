@@ -36,16 +36,15 @@ class KmeansMapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Clus
             reader.next(key, centroid);
             oldcentroids.add(centroid.ComputeMean());
         }
+        reader.close();
     }
 
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException
     {
-        System.out.println(value);
         String[] tokens = value.toString().split( "," );
         List<Double> coords = new ArrayList<Double>();
         try {
             coords.add( Double.parseDouble( tokens[col] ) );
-            System.out.println(Double.parseDouble( tokens[col] ));
         } catch ( Exception e )
         {
             LOG.info( "KmeansMapper: swallowing exception " + e.getMessage() );
