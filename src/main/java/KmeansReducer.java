@@ -58,12 +58,6 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
     @Override
     protected void setup(Context context) throws IOException, InterruptedException
     {
-        /*super.setup( context );
-        Configuration conf = context.getConfiguration();
-        Path centersPath = new Path(conf.get("centroids"));
-
-        SequenceFile.Reader centerReader = new SequenceFile.Reader( conf, SequenceFile.Reader.file(centersPath));*/
-
         Configuration conf = context.getConfiguration();
         Path   filename  = new Path(conf.get("centroids"));
         SequenceFile.Reader reader = new SequenceFile.Reader(conf, SequenceFile.Reader.file(filename));
@@ -80,23 +74,6 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
         {
             throw new IOException("Centroids file seems empty");
         }
-
-        /*Cluster oldCluster = new Cluster(  );
-        MeanData oldMeanData = new MeanData( 1, new Point( 1 ) );
-        int count = 0;
-        while (centerReader.next( oldCluster, oldMeanData ))
-        {
-            newCentroids.put(new Integer( oldCluster.GetId() ), oldMeanData);
-            ++count;
-        }
-        if (count == 0 || count != conf.getInt( "k", 0 ))
-        {
-            centerReader.close();
-            throw new IOException("Centroids file seems empty");
-        }
-
-        centerReader.close();*/
-
     }
 
     @Override
