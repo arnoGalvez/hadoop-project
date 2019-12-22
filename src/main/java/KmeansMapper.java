@@ -38,21 +38,22 @@ class KmeansMapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Clus
 
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException
     {
+        String[] tokens = value.toString().split( "," );
+        List<Double> coords = new ArrayList<Double>();
         try {
-            String[] tokens = value.toString().split( "," );
-            List<Double> coords = new ArrayList<Double>();
             coords.add( Double.parseDouble( tokens[col] ) );
             System.out.println(Double.parseDouble( tokens[col] ));
-            Point pt = new Point( coords );
-
-            int nearest = Point.getNearest( oldcentroids, pt );
-            MeanData centroid = new MeanData( 1, oldcentroids.get( nearest ) );
-            Cluster c = new Cluster( nearest );
-            context.write( c, centroid );
         } catch ( Exception e )
         {
             LOG.info( "KmeansMapper: swallowing exception " + e.getMessage() );
         }
+        if (coords.size()!=0) {
+            Point pt = new Point(coords);
 
+            int nearest = Point.getNearest(oldcentroids, pt);
+            MeanData centroid = new MeanData(1, oldcentroids.get(nearest));
+            Cluster c = new Cluster(nearest);
+            context.write(c, centroid);
+        }
     }
 }
