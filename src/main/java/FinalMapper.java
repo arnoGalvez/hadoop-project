@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.apache.hadoop.fs.FileSystem.LOG;
+
 public class FinalMapper extends Mapper<Object, Text, Cluster, Text> {
     private static int k;
     private static int col;// Coordinates starting columns
@@ -35,11 +37,18 @@ public class FinalMapper extends Mapper<Object, Text, Cluster, Text> {
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
         String[] tokens = value.toString().split(",");
         List<Double> coords = new ArrayList<Double>();
-        coords.add(Double.parseDouble(tokens[col]));
-        Point pt = new Point(coords);
+        Point pt = null;
+        try {
+            coords.add(Double.parseDouble(tokens[col]));
+            pt = new Point(coords);
+        } catch (Exception e) {
 
-        int nearest = Point.getNearest(oldcentroids, pt);
-        Cluster cluster = new Cluster(nearest);
-        context.write(cluster, value);
+            LOG.info( "FinalMapper: swallowing exception " + e.getMessage() );
+        }
+        if (pt != null) {
+            int nearest = Point.getNearest(oldcentroids, pt);
+            Cluster cluster = new Cluster(nearest);
+            context.write(cluster, value);
+        }
     }
 }
