@@ -75,8 +75,14 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
         Cluster oldCluster = new Cluster(  );
         MeanData oldMeanData = new MeanData( 1, new Point( 1 ) );
         int count = 0;
+        int lastId = -1;
         while (centerReader.next( oldCluster, oldMeanData ))
         {
+            if (oldCluster.GetId() == lastId)
+            {
+                throw new IOException( "Read the same cluster two times. Cluster was " + lastId );
+            }
+            lastId = oldCluster.GetId();
             oldCentroids.put(new IntWritable( oldCluster.GetId() ), oldMeanData);
             ++count;
         }
