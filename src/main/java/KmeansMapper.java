@@ -38,11 +38,11 @@ class KmeansMapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Clus
 
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException
     {
-        System.out.println(value);
         try {
             String[] tokens = value.toString().split( "," );
             List<Double> coords = new ArrayList<Double>();
             coords.add( Double.parseDouble( tokens[col] ) );
+            System.out.println(Double.parseDouble( tokens[col] ));
             Point pt = new Point( coords );
 
             int nearest = Point.getNearest( oldcentroids, pt );
