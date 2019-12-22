@@ -17,7 +17,7 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
 
     static public final String ConfStringHasConverged = "HasConverged";
 
-    public enum CONVERGENCE_COUNTER {COUNTER}
+    public enum CONVERGENCE_COUNTER { COUNTER }
 
     static int iterationCount = 0;
 
@@ -58,18 +58,24 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
     @Override
     protected void setup(Context context) throws IOException, InterruptedException
     {
+        // Read centroid file
         Configuration conf = context.getConfiguration();
         Path   filename  = new Path(conf.get("centroids"));
+        int colCount = conf.getInt( "colCount", 1 );
         SequenceFile.Reader reader = new SequenceFile.Reader(conf, SequenceFile.Reader.file(filename));
+
         Cluster  key      = new Cluster(0);
-        MeanData centroid = new MeanData(1, new Point( 1 ));
+        MeanData centroid = new MeanData(1, new Point( colCount ));
         int count = 0;
         for (int i = 0; i < conf.getInt( "k", 0 ); i++) {
             reader.next(key, centroid);
-            newCentroids.put( key.GetId(), centroid );
+            MeanData tmp = new MeanData( centroid );
+            newCentroids.put( key.GetId(), tmp );
             ++count;
         }
+
         reader.close();
+
         if (count == 0 || count != conf.getInt( "k", 0 ))
         {
             throw new IOException("Centroids file seems empty");
@@ -95,14 +101,12 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
     {
         Configuration conf = context.getConfiguration();
         Path centersPath = new Path(conf.get("centroids"));
-
-
-
+        int colCount = conf.getInt( "colCount", 1 );
         SequenceFile.Reader centerReader = new SequenceFile.Reader( conf, SequenceFile.Reader.file(centersPath));
 
         HashMap<Integer, MeanData> oldCentroids = new HashMap<Integer, MeanData>();
         Cluster oldCluster = new Cluster(  );
-        MeanData oldMeanData = new MeanData( 1, new Point( 1 ) );
+        MeanData oldMeanData = new MeanData( 1, new Point( colCount ) );
         int count = 0;
         int lastId = -1;
         while (centerReader.next( oldCluster, oldMeanData ))
