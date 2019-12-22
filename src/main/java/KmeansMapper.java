@@ -41,7 +41,6 @@ class KmeansMapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Clus
 
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException
     {
-        System.out.println(value);
         String[] tokens = value.toString().split( "," );
         List<Double> coords = new ArrayList<Double>();
         try {
@@ -52,11 +51,12 @@ class KmeansMapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Clus
         }
         if (coords.size()!=0) {
             Point pt = new Point(coords);
+            throw new IOException("Points : " + pt);
 
-            int nearest = Point.getNearest(oldcentroids, pt);
+            /*int nearest = Point.getNearest(oldcentroids, pt);
             MeanData centroid = new MeanData(1, oldcentroids.get(nearest));
             Cluster c = new Cluster(nearest);
-            context.write(c, centroid);
+            context.write(c, centroid);*/
         }
     }
 }
