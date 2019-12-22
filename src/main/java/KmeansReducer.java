@@ -25,7 +25,7 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
     {
         ++iterationCount;
 
-        final double eps = 99999999999.999;
+        final double eps = 0.1;
         Iterator<Integer> clusterIterator = newCentroids.keySet().iterator();
         int k = 0;
         while (clusterIterator.hasNext())
@@ -47,10 +47,10 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
             throw new IOException( "Wrong number of clusters. Was " + k + " expected " + expectedIterations + ".\n centroids: " + newCentroids.toString() );
         }
 
-        if (iterationCount == 1)
+        /*if (iterationCount == 1)
         {
             throw  new IOException( "Weird convergence in only 1 iteration.\nOldcentroids :" + oldCentroids.toString() + "\nNewCentroids: " + newCentroids.toString() );
-        }
+        }*/
 
         return true;
     }
