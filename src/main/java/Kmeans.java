@@ -63,7 +63,7 @@ public class Kmeans {
                 SequenceFile.Writer.valueClass(MeanData.class));
         for (int i = k-1; i >= 0; --i) {
             Cluster cluster = new Cluster(i);
-            MeanData meanData = new MeanData(1, Point.RandomPoint(1, (double)i, (double)i));
+            MeanData meanData = new MeanData(1, Point.RandomPoint(1, -100.0 * (double)i, 100.0 * (double)i));
             centerWriter.append(cluster, meanData);
         }
 
