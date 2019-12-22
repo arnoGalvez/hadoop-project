@@ -50,6 +50,7 @@ public class MeanData implements Writable {
     }
 
 
+    @Override
     public void readFields(DataInput in) throws IOException {
         pointsCount = in.readInt();
         coordsCount = in.readInt();
@@ -61,6 +62,7 @@ public class MeanData implements Writable {
         sum = new Point(coords);
     }
 
+    @Override
     public void write(DataOutput out) throws IOException {
         out.writeInt(pointsCount);
         out.writeInt(coordsCount);
