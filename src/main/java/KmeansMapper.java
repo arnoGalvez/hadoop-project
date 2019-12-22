@@ -26,7 +26,7 @@ class KmeansMapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Clus
         k   = conf.getInt("k", -1);
         col = conf.getInt("col", -1);
         coordinatesCount = conf.getInt("coordinatesCount", 0);
-        Path   filename  = new Path(conf.get("centersFilePath"));
+        Path   filename  = new Path(conf.get("centroids"));
         SequenceFile.Reader reader = new SequenceFile.Reader(conf, SequenceFile.Reader.file(filename));
         Cluster  key      = new Cluster(0);
         MeanData centroid = new MeanData(1, new Point( 1 ));

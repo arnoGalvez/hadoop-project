@@ -25,7 +25,6 @@ public class Kmeans {
         Path output = new Path(args[1]);
         Path centers = new Path(input.getParent().toString() + "/centroids");
 
-        conf.set("centersFilePath", centers.toString());
         conf.setBoolean(KmeansReducer.ConfStringHasConverged, false);
 
 

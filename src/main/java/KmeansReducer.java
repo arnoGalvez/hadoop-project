@@ -58,19 +58,16 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
     {
         Configuration conf = context.getConfiguration();
         FileSystem fs = FileSystem.get( conf );
-        Path centersPath = new Path(conf.get("centersFilePath"));
+        Path centersPath = new Path(conf.get("centroids"));
 
 
         SequenceFile.Reader centerReader = new SequenceFile.Reader( conf, SequenceFile.Reader.file(centersPath));
-        SequenceFile.Writer centerWriter = SequenceFile.createWriter(conf,
-                                                                     SequenceFile.Writer.file(centersPath),
-                                                                     SequenceFile.Writer.keyClass(Cluster.class),
-                                                                     SequenceFile.Writer.valueClass(MeanData.class));
+
         HashMap<Cluster, MeanData> oldCentroids = new HashMap<Cluster, MeanData>();
         Cluster oldCluster = new Cluster(  );
         MeanData oldMeanData = new MeanData( 1, new Point( 1 ) );
         int count = 0;
-        for (; centerReader.next( oldCluster, oldMeanData );)
+        while (centerReader.next( oldCluster, oldMeanData ))
         {
             oldCentroids.put(oldCluster, oldMeanData);
             ++count;
@@ -80,18 +77,25 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
             throw new IOException("Centroids file seems empty");
         }
 
+        centerReader.close();
+
         boolean hasConverged = HasConverged( oldCentroids );
         conf.setBoolean( ConfStringHasConverged, hasConverged );
         if (!hasConverged)
         {
+            SequenceFile.Writer centerWriter = SequenceFile.createWriter(conf,
+                                                                         SequenceFile.Writer.file(centersPath),
+                                                                         SequenceFile.Writer.keyClass(Cluster.class),
+                                                                         SequenceFile.Writer.valueClass(MeanData.class));
             fs.truncate( centersPath, 0 );
             for (HashMap.Entry<Cluster, MeanData> entry : newCentroids.entrySet())
             {
                 centerWriter.append( entry.getKey(), entry.getValue() );
             }
+            centerWriter.close();
         }
 
-        centerReader.close();
-        centerWriter.close();
+
+
     }
 }
