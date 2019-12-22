@@ -37,12 +37,10 @@ public class Kmeans {
         /* Set via configuration 'k' and the column onto do the clustering */
         int k = Integer.parseInt(args[2]);
         int col = Integer.parseInt(args[3]);
-        int coordsCount = Integer.parseInt(args[4]);
 
 
         conf.setInt("k", k);
         conf.setInt("col", col);
-        conf.setInt("coordinatesCount", coordsCount);
         conf.set("centroids", centers.toString());
 
         FileSystem outputRm = FileSystem.get(output.toUri(), conf);
