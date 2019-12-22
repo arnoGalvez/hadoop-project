@@ -66,13 +66,18 @@ public class KmeansReducer extends Reducer<Cluster, MeanData, Cluster, MeanData>
                                                                      SequenceFile.Writer.file(centersPath),
                                                                      SequenceFile.Writer.keyClass(Cluster.class),
                                                                      SequenceFile.Writer.valueClass(MeanData.class));
-
         HashMap<Cluster, MeanData> oldCentroids = new HashMap<Cluster, MeanData>();
         Cluster oldCluster = new Cluster(  );
         MeanData oldMeanData = new MeanData( 1, new Point( 1 ) );
+        int count = 0;
         for (; centerReader.next( oldCluster, oldMeanData );)
         {
             oldCentroids.put(oldCluster, oldMeanData);
+            ++count;
+        }
+        if (count == 0)
+        {
+            throw new IOException("Centroids file seems empty");
         }
 
         boolean hasConverged = HasConverged( oldCentroids );
